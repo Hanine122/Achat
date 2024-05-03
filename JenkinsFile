@@ -1,13 +1,96 @@
 pipeline {
-    agent any // This specifies that the pipeline can run on any available agent (slave node) in your Jenkins environment.
-    
+    agent any
+
     stages {
-        stage("GIT") { // This defines a stage named "GIT".
+        stage("GIT") {
             steps {
-                echo "Getting Project from Git" // This prints a message to the Jenkins console.
-                git branch: "master", // This specifies the branch to checkout from the Git repository.
-                    url: "https://github.com/Hanine122/Achat" // This specifies the URL of the Git repository.
+                echo "Getting Project from Git"
+                git branch: "master",
+                    url: "https://github.com/Hanine122/Achat"
             }
         }
+    stage('MVN BUILD') {
+            steps {
+                 sh 'mvn clean'
+                    sh 'mvn compile'
+                    sh 'mvn install'
+
+        }
+        }
+
+
+
+
+        stage("SONARQUBE") {
+                    steps {
+                  //  dir('Achat') {
+        // sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=P@ssw0rd"
+        sh 'mvn clean package sonar:sonar'
+}
+                   // }
+                }
+
+       stage("MOCKITO") {
+         steps {
+
+                    sh 'mvn test'
+
+            }
+        }
+
+
+
+        stage("NEXUS") {
+            steps {
+
+                    sh "mvn deploy"
+                }
+        }
+
+stage('GRAFANA') {
+                    steps {
+                        script {
+                            def grafanaUrl = 'http://localhost:3000'
+                            sh "xdg-open ${grafanaUrl}"
+                        }
+                    }
+                 }
+
+        stage('DOCKER IMAGE'){
+                    steps {
+                        sh 'docker build -t yosrazayni2/achat:1.0.0 .'
+                    }
+                }
+
+                stage('DOCKER HUB') {
+                    steps {
+                        echo 'deploying docker image...';
+                        sh '''docker login -u yosrazayani2 -p docker789
+                              docker push yosrazayani2/achat:1.0.0'''
+                     }
+                 }
+
+                 stage('DOCKER-COMPOSE') {
+                    steps {
+                        echo 'composing docker image...';
+                        sh 'docker-compose up -d'
+                     }
+                 }
+
+
+
+        // stage('MAIL BUILD') {
+        //     steps {
+        //         script {
+        //             currentBuildResult = currentBuild.result
+        //             emailext subject: "${currentBuildResult == 'SUCCESS' ? 'Build Successful' : 'Build Failed'}",
+        //                     body: "Le build a abouti avec le statut : ${currentBuildResult}",
+        //                     recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+        //                     to: 'oumaymalyna.khaznaji@esprit.tn',
+        //                     from: 'oumaymalyna.khaznaji@esprit.tn',
+        //                     replyTo: 'oumaymalyna.khaznaji@esprit.tn'
+        //         }
+        //     }
+        // }
     }
 }
