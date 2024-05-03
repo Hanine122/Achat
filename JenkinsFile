@@ -5,8 +5,8 @@ pipeline {
         stage("GIT") {
             steps {
                 echo "Getting Project from Git"
-                git branch: "main",
-                    url: "https://github.com/yosrazayani/Achat.git"
+                git branch: "master",
+                    url: "https://github.com/Hanine122/Achat"
             }
         }
     stage('MVN BUILD') {
