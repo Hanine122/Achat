@@ -23,9 +23,9 @@ pipeline {
 
         stage("SONARQUBE") {
                     steps {
-                  //  dir('Achat') {
-        // sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=P@ssw0rd"
-        sh 'mvn clean package sonar:sonar'
+                //  dir('Achat') {
+        sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=password123"
+        // sh 'mvn clean package sonar:sonar'
 }
                    // }
                 }
