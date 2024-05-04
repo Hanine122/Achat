@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo "Getting Project from Git"
                 git branch: "main",
-                    url: "https://github.com/yosrazayani/Achat.git"
+                    url: "https://github.com/Hanine123/Achat.git"
             }
         }
     stage('MVN BUILD') {
@@ -64,15 +64,15 @@ stage('Prometheus') {
 
         stage('DOCKER IMAGE'){
                     steps {
-                        sh 'docker build -t yosrazayni2/achat:1.0.0 .'
+                        sh 'docker build -t haninehammami66/alpine:1.0.0 .'
                     }
                 }
 
                 stage('DOCKER HUB') {
                     steps {
                         echo 'deploying docker image...';
-                        sh '''docker login -u yosrazayani2 -p P@ssw0rd2
-                              docker push yosrazayani2/achat:1.0.0'''
+                        sh '''docker login -u haninehammami66 -p password
+                              docker push haninehammami66/alpine:1.0.0'''
                      }
                  }
 
