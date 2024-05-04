@@ -5,7 +5,7 @@ pipeline {
         stage("GIT") {
             steps {
                 echo "Getting Project from Git"
-                git branch: "main",
+                git branch: "master",
                     url: "https://github.com/Hanine122/Achat.git"
             }
         }
