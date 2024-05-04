@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo "Getting Project from Git"
                 git branch: "main",
-                    url: "https://github.com/Hanine123/Achat.git"
+                    url: "https://github.com/Hanine122/Achat.git"
             }
         }
     stage('MVN BUILD') {
