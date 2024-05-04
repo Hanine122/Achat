@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo "Getting Project from Git"
                 git branch: "main",
-                    url: "https://github.com/Hanine122/Achat.git"
+                    url: "https://github.com/yosrazayani/Achat.git"
             }
         }
     stage('MVN BUILD') {
@@ -24,7 +24,7 @@ pipeline {
         stage("SONARQUBE") {
                     steps {
                   //  dir('Achat') {
-        // sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=password123"
+        // sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=P@ssw0rd"
         sh 'mvn clean package sonar:sonar'
 }
                    // }
@@ -47,19 +47,32 @@ pipeline {
                 }
         }
 
-
+stage('Prometheus') {
+                            steps {
+                                script {
+                                    sh 'curl -X POST -d "status=success" http://localhost:9090/metrics/job/prometheus_stage'
+                                }
+                            }
+                        }
+                        stage('Grafana') {
+                            steps {
+                                script {
+                                    sh 'curl -X POST -d "prometheus_url=http://localhost:9090/" -d "grafana_url=http://localhost:3000/" http://localhost:8080/api/datasources'
+                                        }
+                                 }
+                                 }
 
         stage('DOCKER IMAGE'){
                     steps {
-                        sh 'docker build -t haninehammami66/alpine:1.0.0 .'
+                        sh 'docker build -t yosrazayni2/achat:1.0.0 .'
                     }
                 }
 
                 stage('DOCKER HUB') {
                     steps {
                         echo 'deploying docker image...';
-                        sh '''docker login -u haninehammami66 -p password13
-                              docker push haninehammami66/alpine:1.0.0'''
+                        sh '''docker login -u yosrazayani2 -p P@ssw0rd2
+                              docker push yosrazayani2/achat:1.0.0'''
                      }
                  }
 
@@ -69,14 +82,7 @@ pipeline {
                         sh 'docker-compose up -d'
                      }
                  }
-                 stage('GRAFANA') {
-                                     steps {
-                                         script {
-                                             def grafanaUrl = 'http://localhost:3000'
-                                             sh "xdg-open ${grafanaUrl}"
-                                         }
-                                     }
-                                  }
+
 
 
 
